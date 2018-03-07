@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Basic Forum</title>
+    <h1 class="text-center">Basic Forum</h1>
+  </head>
+  <body>
+    <div class="col">
+      <input class="form-control" id="userSpace"type="text" placeholder="Username">
+    </div>
+    <div class="col">
+      <textarea class="form-control" id="postSpace" placeholder="Write your post here" rows="3"></textarea>
+    </div>
+    <pre>
+    </pre>
+    <div id="messages">
+    </div>
+  </body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" charset="utf-8"></script>
+<script>
+  document.getElementById('postSpace').addEventListener('keydown', function(event){
+    if(event.which === 13 && event.shiftKey == false){
+      event.preventDefault()
+      var n = document.getElementById('userSpace').value
+      var m = document.getElementById('postSpace').value
+      createNewMessage(n, m)
+      $.post(document.URL+"posts", {name:n, message: m})
+      document.getElementById('postSpace').value = ''
+      document.getElementById('userSpace').value = ''
+    }
+  })
+  $.get(document.URL+"posts", function(data){
+      for(var i in data.posts){
+        createNewMessage(data.posts[i].name, data.posts[i].message)
+      }
+    //$.post(document.URL+"posts", {name:'a', message: 'b'})
+  })
+
+  var createNewMessage = function(name, message){
+    var newMessage = document.createElement('div')
+    newMessage.innerHTML = '<div class="card">\
+      <div class="card-block">\
+          <h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;'+name+'</h4>\
+          '+message+'\
+      </div>\
+    </div>\''
+    document.getElementById("messages").prepend(newMessage)
+  }
+</script>

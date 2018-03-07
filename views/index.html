@@ -27,7 +27,7 @@
   document.getElementById('postSpace').addEventListener('keydown', function(event){
     if(event.which === 13 && event.shiftKey == false){
       event.preventDefault()
-      var n = document.getElementById('userSpace').value
+      var n = document.getElementById('userSpace').value + ' @ ' + new Date()
       var m = document.getElementById('postSpace').value
       createNewMessage(n, m)
       $.post(document.URL+"posts", {name:n, message: m})

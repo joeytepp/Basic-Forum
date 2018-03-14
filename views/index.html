@@ -22,34 +22,81 @@
     </div>
   </body>
 </html>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" charset="utf-8"></script>
-<script>
-  document.getElementById('postSpace').addEventListener('keydown', function(event){
-    if(event.which === 13 && event.shiftKey == false){
-      event.preventDefault()
-      var n = document.getElementById('userSpace').value + ' @ ' + new Date()
-      var m = document.getElementById('postSpace').value
-      createNewMessage(n, m)
-      $.post(document.URL+"posts", {name:n, message: m})
-      document.getElementById('postSpace').value = ''
-      document.getElementById('userSpace').value = ''
-    }
-  })
-  $.get(document.URL+"posts", function(data){
-      for(var i in data.posts){
-        createNewMessage(data.posts[i].name, data.posts[i].message)
-      }
-    //$.post(document.URL+"posts", {name:'a', message: 'b'})
-  })
 
-  var createNewMessage = function(name, message){
-    var newMessage = document.createElement('div')
-    newMessage.innerHTML = '<div class="card">\
-      <div class="card-block">\
-          <h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;'+name+'</h4>\
-          '+message+'\
-      </div>\
-    </div>\''
-    document.getElementById("messages").prepend(newMessage)
-  }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+<script>
+    // Connect to socket.io
+    var socket = io.connect('http://127.0.0.1:4000')
+    if(socket !== undefined){
+      document.getElementById('postSpace').addEventListener('keydown', function(event){
+        if(event.which === 13 && event.shiftKey == false){
+          event.preventDefault()
+          var n = document.getElementById('userSpace').value + ' @ ' + new Date()
+          var m = document.getElementById('postSpace').value
+          len = document.getElementsByClassName('card-block').length
+          createNewMessage(n, m, len)
+          $.post(document.URL+"posts", {name:n, message: m, num:len})
+          document.getElementById('postSpace').value = ''
+          document.getElementById('userSpace').value = ''
+        }
+      })
+      $.get(document.URL+"posts", function(data){
+          for(var i in data.posts){
+            createNewMessage(data.posts[i].name, data.posts[i].message, data.posts[i]._id)
+            if(data.posts[i].comments.length){
+              for(var j in data.posts[i].comments){
+                createComment(data.posts[i]._id, data.posts[i].comments[j].message)
+              }
+            }
+          }
+        })
+    }
+
+    socket.on('commentOut', function(data){
+      createComment(data.num, data.message)
+      console.log(data.message)
+    })
+
+    var createNewMessage = function(name, message, num){
+      var newMessage = document.createElement('div')
+      newMessage.id = num;
+      newMessage.className = "card"
+      newMessage.innerHTML = '<div class="card">\
+        <div class="card-block">\
+            <h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;'+name+'</h4>\
+            '+message+'\
+            <div class="card-block">\
+              <div id = "comments-'+ num+ '">\
+              </div>\
+            </div>\
+        </div>\
+      </div>'
+      newMessage.addEventListener('click', function(event){
+        console.log(num)
+      })
+      var textbox = document.createElement('input')
+      textbox.setAttribute('type', 'text')
+      textbox.setAttribute('class', 'form-control')
+      textbox.setAttribute('id', 'textbox-'+num)
+      textbox.setAttribute('placeholder', 'Write a comment')
+      textbox.addEventListener('keydown', function(event){
+        if(event.which === 13 & event.shiftKey == false){
+          event.preventDefault()
+          socket.emit('commentIn', {message: textbox.value, id: num})
+          textbox.value = ""
+        }
+      })
+      newMessage.childNodes[0].appendChild(textbox)
+      document.getElementById("messages").prepend(newMessage)
+    }
+
+    var createComment = function(num, value){
+      var comment = document.createElement('div')
+      comment.innerHTML = '<h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;comment</h6>'+value
+      document.getElementById('comments-'+num).appendChild(comment)
+      console.log(document.getElementById(num))
+      console.log('comment created')
+    }
 </script>

@@ -37,7 +37,6 @@
           var m = document.getElementById('postSpace').value
           len = document.getElementsByClassName('card-block').length
           socket.emit('postIn', {name: n, message: m})
-          $.post(document.URL+"posts", {name:n, message: m, num:len})
           document.getElementById('postSpace').value = ''
           document.getElementById('userSpace').value = ''
         }

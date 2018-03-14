@@ -39,6 +39,20 @@ app.use('/', (req, res, next) => {
 })
 
 client.on('connection', function(socket) {
+  socket.on('postIn', function(data){
+    var newPost = new Post({
+      _id: new mongoose.Types.ObjectId(),
+      name: data.name,
+      message: data.message,
+      comments: []
+    })
+
+    newPost.save(function(err, result){
+      if(err) throw err
+      socket.emit('postOut', newPost)
+    })
+  })
+
   socket.on('commentIn', function(data) {
     console.log(data.message, data.id)
     Post.findOne({
@@ -59,5 +73,6 @@ client.on('connection', function(socket) {
       console.log(post)
     })
   })
+  // Handling new comments
 })
 module.exports = app

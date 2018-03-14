@@ -36,7 +36,7 @@
           var n = document.getElementById('userSpace').value + ' @ ' + new Date()
           var m = document.getElementById('postSpace').value
           len = document.getElementsByClassName('card-block').length
-          createNewMessage(n, m, len)
+          socket.emit('postIn', {name: n, message: m})
           $.post(document.URL+"posts", {name:n, message: m, num:len})
           document.getElementById('postSpace').value = ''
           document.getElementById('userSpace').value = ''
@@ -52,12 +52,15 @@
             }
           }
         })
-    }
+    } // Initializing the feed of posts
 
     socket.on('commentOut', function(data){
       createComment(data.num, data.message)
-      console.log(data.message)
-    })
+    }) // Handling new comments from the backend
+
+    socket.on('postOut', function(data){
+      createNewMessage(data.name, data.message, data._id)
+    }) // Handling new posts from the backend
 
     var createNewMessage = function(name, message, num){
       var newMessage = document.createElement('div')
@@ -96,7 +99,6 @@
       var comment = document.createElement('div')
       comment.innerHTML = '<h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;comment</h6>'+value
       document.getElementById('comments-'+num).appendChild(comment)
-      console.log(document.getElementById(num))
       console.log('comment created')
     }
 </script>

@@ -7,7 +7,6 @@ const Post = require('../models/post')
 mongoose.connect('mongodb://localhost:27017/basicForum')
 // Connecting to db
 
-mongoose.model('test', {name: String})
 router.get('/', (req, res, next) => {
   console.log('Getting posts...')
   Post.find(function(err, posts){

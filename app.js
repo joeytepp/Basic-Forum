@@ -46,10 +46,9 @@ client.on('connection', function(socket) {
       message: data.message,
       comments: []
     })
-
+    socket.emit('postOut', newPost)
     newPost.save(function(err, result){
       if(err) throw err
-      socket.emit('postOut', newPost)
     })
   })
 
@@ -65,10 +64,10 @@ client.on('connection', function(socket) {
         name:'user',
         message: data.message
       })
+      socket.emit('commentOut', {message: data.message, num: data.id})
       Post.update({_id:data.id}, {comments: comments})
       post.save(function(err, result){
         if(err) throw err
-        socket.emit('commentOut', {message: data.message, num: data.id})
       })
       console.log(post)
     })

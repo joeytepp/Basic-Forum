@@ -19,6 +19,16 @@ router.get('/', (req, res, next) => {
   })
 })
 
+router.post('/delete', (req, res, next)=>{
+  console.log(req.body)
+  Post.remove({_id: req.body.id}, function(err){
+    if(err) throw err
+    console.log(err)
+    res.status(200).json({
+      result: req.body
+    })
+  })
+})
 router.post('/', (req, res, next)=>{
   var newPost = new Post({
     _id: new mongoose.Types.ObjectId(),

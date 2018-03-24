@@ -64,11 +64,12 @@
 
     var createNewMessage = function(name, message, num){
       var newMessage = document.createElement('div')
+      var btnInnerHTML = '<button class = "btn" onclick=setCancelId("'+num+'") ><i class="fa fa-times-circle-o" align="right" aria-hidden="true" ></i></button>'
       newMessage.id = num;
       newMessage.className = "card"
       newMessage.innerHTML = '<div class="card">\
         <div class="card-block">\
-            <h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;'+name+'</h4>\
+            <h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;'+name+btnInnerHTML+'</h4>\
             '+message+'\
             <div class="card-block">\
               <div id = "comments-'+ num+ '">\
@@ -76,9 +77,6 @@
             </div>\
         </div>\
       </div>'
-      newMessage.addEventListener('click', function(event){
-        console.log(num)
-      })
       var textbox = document.createElement('input')
       textbox.setAttribute('type', 'text')
       textbox.setAttribute('class', 'form-control')
@@ -100,5 +98,14 @@
       comment.innerHTML = '<h6 class="card-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;comment</h6>'+value
       document.getElementById('comments-'+num).appendChild(comment)
       console.log('comment created')
+    }
+
+    var accessor = function(id){
+      console.log(document.getElementById(id))
+    }
+    var setCancelId = function(num){
+      var element = document.getElementById(num)
+      element.outerHTML = ""
+      $.post(document.URL+"posts/delete", {id:num})
     }
 </script>

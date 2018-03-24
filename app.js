@@ -53,7 +53,7 @@ client.on('connection', function(socket) {
   })
 
   socket.on('commentIn', function(data) {
-    console.log(data.message, data.id)
+    //console.log(data.message, data.id)
     Post.findOne({
       _id: data.id
     }, function(err, post) {
@@ -70,6 +70,10 @@ client.on('connection', function(socket) {
         if(err) throw err
       })
       console.log(post)
+    })
+
+    socket.on('deleteIn', function(data){
+      console.log('I will now delete post '+data.id)
     })
   })
   // Handling new comments

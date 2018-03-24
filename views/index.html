@@ -32,14 +32,17 @@
       document.getElementById('postSpace').addEventListener('keydown', function(event){
         if(event.which === 13 && event.shiftKey == false){
           event.preventDefault()
+          preN = document.getElementById('userSpace').value
           n = document.getElementById('userSpace').value + ' @ ' + new Date()
           m = document.getElementById('postSpace').value
           len = document.getElementsByClassName('card-block').length
-          if(n !== '' && m !== ''){
+          if(preN !== '' && m !== ''){
             socket.emit('postIn', {name: n, message: m})
+            document.getElementById('postSpace').value = ''
+            document.getElementById('userSpace').value = ''
+          }else{
+            alert('Please enter a username and a post')
           }
-          document.getElementById('postSpace').value = ''
-          document.getElementById('userSpace').value = ''
         }
       })
       $.get(document.URL+"posts", function(data){
@@ -64,7 +67,7 @@
 
     var createNewMessage = function(name, message, num){
       var newMessage = document.createElement('div')
-      var btnInnerHTML = '<button class = "btn" onclick=setCancelId("'+num+'") ><i class="fa fa-times-circle-o" align="right" aria-hidden="true" ></i></button>'
+      var btnInnerHTML = '<button class = "btn btn-default btn-sm" onclick=setCancelId("'+num+'") ><i class="fa fa-times-circle-o" align="right" aria-hidden="true" ></i></button>'
       newMessage.id = num;
       newMessage.className = "card"
       newMessage.innerHTML = '<div class="card">\

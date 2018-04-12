@@ -52,6 +52,11 @@ client.on('connection', function(socket) {
     })
   })
 
+  socket.on('deleteIn', function(data){
+    console.log('I will now delete post '+data.id)
+    socket.broadcast.emit('deleteOut', {id:data.id})
+  })
+
   socket.on('commentIn', function(data) {
     //console.log(data.message, data.id)
     Post.findOne({
@@ -72,9 +77,6 @@ client.on('connection', function(socket) {
       console.log(post)
     })
 
-    client.on('deleteIn', function(data){
-      console.log('I will now delete post '+data.id)
-    })
   })
   // Handling new comments
 })

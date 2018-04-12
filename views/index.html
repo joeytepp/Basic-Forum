@@ -65,6 +65,10 @@
       createNewMessage(data.name, data.message, data._id)
     }) // Handling new posts from the backend
 
+    socket.on('deleteOut', function(data){
+      cancelId(data.id)
+    })
+
     var createNewMessage = function(name, message, num){
       var newMessage = document.createElement('div')
       var btnInnerHTML = '<button class = "btn btn-default btn-sm" onclick=setCancelId("'+num+'") ><i class="fa fa-times-circle-o" align="right" aria-hidden="true" ></i></button>'
@@ -106,9 +110,14 @@
     var accessor = function(id){
       console.log(document.getElementById(id))
     }
-    var setCancelId = function(num){
+    var setCancelId = function(num) {
+      socket.emit('deleteIn', {id:num})
+      cancelId(num)
+      $.post(document.URL+"posts/delete", {id:num})
+    }
+
+    var cancelId = function(num){
       var element = document.getElementById(num)
       element.outerHTML = ""
-      $.post(document.URL+"posts/delete", {id:num})
     }
 </script>

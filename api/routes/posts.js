@@ -11,7 +11,7 @@ router.get('/', (req, res, next) => {
   console.log('Getting posts...')
   Post.find(function(err, posts){
     if(err) throw err
-    console.log(posts)
+    //console.log(posts)
     res.status(200).json({
       message: 'All the posts',
       posts: posts
@@ -20,10 +20,12 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/delete', (req, res, next)=>{
-  console.log(req.body)
+  //console.log(req.body)
   Post.remove({_id: req.body.id}, function(err){
-    if(err) throw err
-    console.log(err)
+    if(err) {
+      throw err
+      console.log(err)
+    }
     res.status(200).json({
       result: req.body
     })

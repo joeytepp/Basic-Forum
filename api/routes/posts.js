@@ -4,7 +4,7 @@ const router = express.Router()
 const Post = require('../models/post')
 // Importing necessary modules
 
-mongoose.connect('mongodb://localhost:27017/basicForum')
+mongoose.connect('mongodb+srv://'+process.env.MONGO_USER+':'+process.env.MONGO_PASS+'@cluster0-kxvjp.mongodb.net/test?retryWrites=false')
 // Connecting to db
 
 router.get('/', (req, res, next) => {

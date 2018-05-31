@@ -1,3 +1,4 @@
+require("dotenv").config("./.env")
 const express = require('express')
 const app = express()
 const postsPath = require('./api/routes/posts')
@@ -8,7 +9,7 @@ const client = require('socket.io').listen(4000).sockets
 const Post = require('./api/models/post')
 // Importing the necessary modules
 
-mongoose.connect('mongodb://localhost:27017/basicForum')
+mongoose.connect('mongodb+srv://'+process.env.MONGO_USER+':'+process.env.MONGO_PASS+'@cluster0-kxvjp.mongodb.net/test?retryWrites=false')
 // Connecting to db through mongoose
 
 app.use(bodyParser.urlencoded({extended: false}))
